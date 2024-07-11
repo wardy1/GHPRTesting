@@ -8,8 +8,8 @@ trigger:
       - main
   paths:
     include:
-      - .azuredevops/pipelines/agrimetrics-dev.yaml
-      - platform/subscriptions/agrimetrics-dev
+      - .azuredevops/pipelines/test-dev.yaml
+      - platform/subscriptions/test-dev
 pool:
   name: Azure Pipelines
   vmImage: "windows-latest"
