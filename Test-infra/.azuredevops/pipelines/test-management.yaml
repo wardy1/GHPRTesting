@@ -1,0 +1,99 @@
+name: $(Build.Reason)-$(SourceBranchName)-$(Date:yyyyMMdd)-$(Rev:.r)
+
+appendCommitMessageToRunName: false
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - .azuredevops/pipelines/test-management.yaml
+      - platform/subscriptions/management
+pool:
+  name: Azure Pipelines
+  vmImage: "windows-latest"
+
+variables:
+  - name: workingDirectory
+    value: "$(System.DefaultWorkingDirectory)"
+  - name: scriptsPath
+    value: "pipelines/scripts"
+  - name: filePath
+    value: "platform/subscriptions/Agrimetrics-Management"
+  - name: identity
+    value: "Servent-Landing-Zone"
+  - name: terraform_backend_storage_subscription_id
+    value: "f79a69b8-c7e7-413d-82c9-c7a111fc04b5"
+  - name: terraform_backend_storage_rg_name
+    value: "rg-terraformstorage-prod-uksouth-001"
+  - name: terraform_backend_storage_account_name
+    value: "testfstateuks001"
+  - name: terraform_backend_storage_container_name
+    value: "az-lz-tfstate"
+  - name: terraform_backend_storage_key
+    value: "az-lz-platform-testing.tfstate"
+  - name: system.debug
+    value: false
+
+steps:
+  - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@1
+    displayName: Install Terraform
+    inputs:
+      terraformVersion: "latest"
+  - task: TerraformTaskV4@4
+    displayName: Initialize Terraform
+    inputs:
+      provider: "azurerm"
+      command: "init"
+      backendServiceArm: $(identity)
+      backendAzureRmSubscriptionId: $(terraform_backend_storage_subscription_id)
+      backendAzureRmResourceGroupName: $(terraform_backend_storage_rg_name)
+      backendAzureRmStorageAccountName: $(terraform_backend_storage_account_name)
+      backendAzureRmContainerName: $(terraform_backend_storage_container_name)
+      backendAzureRmKey: $(terraform_backend_storage_key)
+      workingDirectory: $(workingDirectory)/$(filePath)
+    env:
+      ARM_USE_AZUREAD: true
+
+  - task: TerraformTaskV4@4
+    displayName: Terraform Validate
+    inputs:
+      provider: "azurerm"
+      command: "validate"
+      environmentServiceNameAzureRM: $(identity)
+      workingDirectory: $(workingDirectory)/$(filePath)
+
+  - task: TerraformTaskV4@4
+    condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+    displayName: Terraform Plan
+    inputs:
+      provider: "azurerm"
+      command: "plan"
+      commandOptions: -out="out.tfplan"
+      environmentServiceNameAzureRM: $(identity)
+      workingDirectory: $(workingDirectory)/$(filePath)
+    env:
+      ARM_USE_AZUREAD: true
+
+  # - task: PowerShell@2
+  #   displayName: "Comment PR with Terraform Plan"
+  #   condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+  #   inputs:
+  #     filePath: "$(workingDirectory)/$(scriptsPath)/New-AdoTfPlanPullRequestComment-Terraform.ps1"
+  #     arguments: "-JsonPlanPath $(workingDirectory)/$(filePath)/tfplan.json -verbose"
+  #     workingDirectory: $(workingDirectory)/$(filePath)
+  #   env:
+  #     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
+  - task: TerraformTaskV4@4
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    displayName: Terraform Apply
+    inputs:
+      provider: "azurerm"
+      command: "apply"
+      commandOptions: "-auto-approve"
+      environmentServiceNameAzureRM: $(identity)
+      workingDirectory: $(workingDirectory)/$(filePath)
+    env:
+      ARM_USE_AZUREAD: true
