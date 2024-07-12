@@ -8,7 +8,7 @@ trigger:
       - main
   paths:
     include:
-      - .azuredevops/pipelines/test-management.yaml
+      - .Test-infra/azuredevops/pipelines/test-management.yaml
       - platform/subscriptions/management
 pool:
   name: Azure Pipelines
@@ -20,7 +20,7 @@ variables:
   - name: scriptsPath
     value: "pipelines/scripts"
   - name: filePath
-    value: "platform/subscriptions/management"
+    value: ".Test-infra/platform/subscriptions/management"
   - name: identity
     value: "Servent-Landing-Zone"
   - name: terraform_backend_storage_subscription_id
