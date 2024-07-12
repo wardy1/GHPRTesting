@@ -20,7 +20,7 @@ variables:
   - name: scriptsPath
     value: "pipelines/scripts"
   - name: filePath
-    value: ".Test-infra/platform/subscriptions/management"
+    value: "Test-infra/platform/subscriptions/management"
   - name: identity
     value: "Servent-Landing-Zone"
   - name: terraform_backend_storage_subscription_id
