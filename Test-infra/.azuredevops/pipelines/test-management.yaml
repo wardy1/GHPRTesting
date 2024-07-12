@@ -32,7 +32,7 @@ variables:
   - name: terraform_backend_storage_container_name
     value: "az-lz-tfstate"
   - name: terraform_backend_storage_key
-    value: "az-lz-management.tfstate"
+    value: "az-lz-management-testing.tfstate"
   - name: system.debug
     value: false
 
