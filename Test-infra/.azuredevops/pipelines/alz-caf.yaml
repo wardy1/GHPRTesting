@@ -8,7 +8,7 @@ trigger:
       - main
   paths:
     include:
-      - .azuredevops/pipelines/alz-caf.yaml
+      - .Test-infra/azuredevops/pipelines/alz-caf.yaml
       - platform/alz-caf
 pool:
   name: Azure Pipelines
