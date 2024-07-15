@@ -95,7 +95,7 @@ variable "vnet_subnet_names" {
 variable "vnet_subnet_address_spaces" {
   type = list(string)
   default = [
-    "10.12.8.0/28",
+    "10.12.8.0/27",
   ]
   description = "A address spaces for each subnet inside the vNet."
 }
