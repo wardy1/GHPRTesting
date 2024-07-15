@@ -8,8 +8,8 @@ trigger:
       - main
   paths:
     include:
-      - .Test-infra/azuredevops/pipelines/alz-caf.yaml
-      - Test-infra/platform/subscriptions/alz-caf
+      - Test-infra/azuredevops/pipelines/alz-caf.yaml
+      - Test-infra/platform/alz-caf
 pool:
   name: Azure Pipelines
   vmImage: "windows-latest"
@@ -20,7 +20,7 @@ variables:
   - name: scriptsPath
     value: "pipelines/scripts"
   - name: filePath
-    value: "Test-infra/platform/subscriptions/alz-caf"
+    value: "Test-infra/platform/alz-caf"
   - name: identity
     value: "Servent-Landing-Zone"
   - name: terraform_backend_storage_subscription_id
