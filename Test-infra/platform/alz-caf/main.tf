@@ -32,7 +32,7 @@ module "enterprise_scale" {
   default_location = var.default_location
 
   disable_base_module_tags = true
-  disable_telemetry        = false
+  disable_telemetry        = true
 
   deploy_core_landing_zones   = false // Control whether to deploy the default core landing zones // default = true
   deploy_demo_landing_zones   = false // Control whether to deploy the demo landing zones (default = false)
