@@ -10,6 +10,15 @@ trigger:
     include:
       - Test-infra/azuredevops/pipelines/alz-caf.yaml
       - Test-infra/platform/alz-caf
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - Test-infra/platform/alz-caf
+
 pool:
   name: Azure Pipelines
   vmImage: "windows-latest"

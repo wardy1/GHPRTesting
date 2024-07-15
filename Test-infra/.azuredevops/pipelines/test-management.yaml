@@ -10,6 +10,15 @@ trigger:
     include:
       - .Test-infra/azuredevops/pipelines/test-management.yaml
       - platform/subscriptions/management
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - Test-infra/platform/subscriptions/management
+
 pool:
   name: Azure Pipelines
   vmImage: "windows-latest"
